@@ -1,0 +1,419 @@
+Rest API Automation
+Section1 
+> REST API basics and terminology 
+- Rest Assured library (built in java) - used to automated API usign Java 
+- API Automation framework development 
+- API testing using postman - Manual 
+- realtime API's - google, jira, twitter, Youtube 
+
+- Rest assured API's - automation of API's 
+- Dynamic responses from API 
+- Oauth mechanism 
+- Deserialisation using Pojo classes 
+
+> Rest API 
+- Application program interface
+- Front End website (Java) - Client(UI,Frontend) - Server(Details, Reservation#, Backend)(Java)
+- Consider the scenario of Hotel.com and Marriot hotels (Scenario1)
+  - how does hotel.com knows the availablity at Marriot hotels ?
+  - Hotels.com has to check the Marriot DB and update the client in Hotels.com 
+  - But how Marriot.com allows access to Hotels.com ?
+  - How Hotels.com client interacts with Backend Code of Mariott Hotel ? Without allowing repo access to hotels.com 
+  
+- Consider Marriot.com has front end migrated to Angular-typescript while Backend remains in Java 
+  - Solution via API
+  
+  - Front end->(Http request)--> |Mariotte|-->|Backend code      |-->|Database   |
+             <-(Http response)<--|API     |<--|Create reservation|<--|Stores data| 
+  
+  - API collects the needed info from the Frontend and uses it for the Backend code - Create reservation 
+  - Info from the client is sent via json/xml 
+  - API needs to be developed such that it collects the needed info from client and sends it to hit the backend code 
+  - API requests to the Backend code and receives the response from backend 
+  - Response from API to client parsed from json/xml
+
+> REST API's, SOAP API's(webservices), services/API 
+  - REST is the new one - Light weight protocol , flexible 
+  - SOAP provides tight authorisation and authentication to communicate with API - Legacy services are in SOAP 
+
+> API rules - https://rahulshettyacademy.com/maps/api/place/add/json?key= qaclick123
+  - Baseurl - https://rahulshettyacademy.com
+  - Endpoint/ baseurl - API position i.e the base url - this url will lead to the API and can be hit on calling the  baseurl 
+  - Communicate with REST API - GET, POST, PUT, DELETE 
+  - CRUD operations - CREATE(POST), RETRIEVE(GET), UPDATE(PUT), DELETE(DELETE)
+  - GET(RETRIEVE) method 
+    - used to get some info from the server. For ex retrieve existing reservations from the backend through the Mariott API 
+  - POST(CREATE) method 
+    - to send data to server/ Create something on the server. For ex create reservation in the backend Server 
+  - PUT(UPDATE) method 
+    - update some info present in the server. 
+  - DELETE(DELETE) 
+    - Deletes the info in the server 
+
+> Path, Query , Headers 
+
+  Resources - represent API/Collections which can be accessed from the Server - /maps/api/place/add/json
+  - google.com/maps 
+  - google.com/images 
+  - maps and images here represents the resource 
+  
+  Path parameters - sub resource 
+  - google.com/images/112233
+  - 112233 refers to the path parameter 
+  
+  Query parameters - sort/filter the resources - ?key= qaclick123
+  - google.com/images?sort_by=2/20/2020
+  -? represents the query parameter 
+  - each query parameter will be separated by & 
+  
+  Endpoint can be constructed as 
+  - Baseurl/resources/(Query/Path)parameters 
+  
+  Headers/Cookies
+  - meta data associated with API request and response. Additional details to API to process our request 
+  
+Section3
+> Api testing using Postman 
+  - Google maps Api - https://rahulshettyacademy.com/maps/api/place/add/json?key= qaclick123
+  Base url - https://rahulshettyacademy.com
+  Resource - /maps/api/place/add/json
+  Query    - ?key= qaclick123
+  Http method - POST 
+
+  - Get API Contract - Base url , Resource, Query , Http method, Json boday etc
+  
+  - Test API using postman
+  - POST(CREATE) Method   
+    - Create a new collection 
+	- Add request 
+	- Paste the baseurl/resource?queryparameter
+	- add the Sample body 
+	- POST method 
+	- POST Method needs to send a json body 
+	- Body - raw - JSON 
+	- Send - Check the response (given in doc) - place id to retrieve - "63a1d764b7f9bd4c0f2696c8a6badee6" - Status - 200(ok)
+  
+  - GET(RETRIEVE) Method
+    - http://rahulshettyacademy.com/maps/api/place/get/json?place_id=xxxx&key=qaclick123
+	- place_id = 63a1d764b7f9bd4c0f2696c8a6badee6
+	- Base url - https://rahulshettyacademy.com
+    - Resource - /maps/api/place/get/json
+    - Query    - ?place_id=63a1d764b7f9bd4c0f2696c8a6badee6&key= qaclick123
+    - Http method - GET 
+	- No json body for the GET method 
+	- Response is received on Sending the request 
+  
+  - DELETE Method 
+    - https://rahulshettyacademy.com/maps/api/place/delete/json?key=qaclick123&place_id=63a1d764b7f9bd4c0f2696c8a6badee6
+	- Json body
+	- Http method - POST / DELETE 
+	{
+    "place_id":"aec998ff661d26cd39673e9659041bd7"
+	}
+	- Check Response
+	{
+    "status": "OK"
+	}
+	
+  - PUT Method 
+    - http://rahulshettyacademy.com/maps/api/place/update/json?key=qaclick123&place_id=72a273b571e9a5d377547c4cbda5dfe4
+    - "place_id": "72a273b571e9a5d377547c4cbda5dfe4"
+	- http method - PUT / DELETE 
+	- JSON Body 
+	  {
+		"place_id":"72a273b571e9a5d377547c4cbda5dfe4",
+		"address":"70 winter walk, USA",
+		"key":"qaclick123"
+	  }
+	- Check Response - didnt really update - check later
+
+Section4
+> Rest assured API automation 
+  - Rest assured - java dsl for testing of REST based services 
+  - download java jdk - set up env variables - JAVA_HOME & Path variables - bin 
+  - download Rest assured jars - rest assured.io 
+  - create a maven project and use the maven dependancy 
+  - create a class with main method 
+  - keywords - given(), when(), then()
+    given() -> query parameter, header, json body
+	when() -> http method , resource 
+	then() -> assertions 
+	log().all() - for logging on the request and the response 
+	
+
+Section5 basics.java
+> Assertions on json response 
+  - assertion on status, body, header 
+  - extract keyword 
+  - jsonpath - parse the response and store it as string 
+  - given(query parameters, header, body)-> when(http CRUD method, resource)-> then(assertions)
+  
+Section6 - jsonmock.java
+> Parse complex json file  
+  - json [ refers to the array 
+  - expected json response - mock - automate this mock response extracting different fields and values using loops
+  - jsc.getString("path") , jsc.getInt("path")
+	
+Section7 - Dynamic json payloads - Library API - DynamicJson.java
+> Advanced payloads creation - Parameterise API tests with multiple data sets - separate payload file instead of being in the project - Feeding json payload using Excel hashmap  
+  - dynamic payload where the fields in the mock response are dynamic instead of hardcoded payloads 
+  - Making the payload dynamic - change the method to parameterised and insert the parameters in the payload - addBook method in the payload file 
+  - Implementing dataprovider annotation for parameterising the payload with different values 
+  - Static payload file in another location instead of having it in the code space 
+  - Static payload -> convert to Byte data type -> convert then to string   
+  - new String(Files.readAllBytes(Paths.get("C:\\Users\\vravindran\\Desktop\\addPlace.json")))
+  
+Section8 - JIRA API - E2E API automation - refer this section in the course - Didnt implement it in the project 
+
+> Automation test case fails then automatically create a ticket in Jira - achieved using API 
+  - Cookie based authentication in Jira API 
+    - Postman - Post method 
+    - Base url - http://localhost:8080/
+	- Resource - rest/auth/1/session
+	- Send - Login successful 
+	- use the session id from the response 
+	
+  - Create an issue 
+    - Base url - http://localhost:8080/
+	- resource - rest/api/2/issue
+	- Add header - cookie - JSESSIONID=6E348797123456789....
+	- add body -  "fields": {
+        "project": {
+            "id": "RES"
+        },
+		"summary": "Creating a defect",
+		"description": "Creating a defect description",
+        "issuetype": {
+            "name": "Bug"
+        }
+	
+	- Response - Status 201 
+	  {
+    "id": "10000",
+    "key": "TST-24",
+    "self": "http://www.example.com/jira/rest/api/2/issue/10000"
+}
+
+  - Delete an issue 
+    - Base url - http://localhost:8080/
+	- resource - rest/api/2/issue/10000
+    - Add header - cookie - JSESSIONID=6E348797123456789....
+	
+	- Response - STATUS 204 Returned if the issue was removed successfully.
+  
+  - Add a comment 
+    rest/api/2/issue/{issueIdOrKey}/comment
+  - Update a comment 
+    rest/api/2/issue/{issueIdOrKey}/comment/{id}
+	
+- Automate the process with the APIs for each action like create session - add comment - add attachment - get issue details and verify if the comment and attachment exists using Get issue API 
+
+- Adding a comment - rest/api/2/issue/{issueIdOrKey}/comment 
+- Login method and get the sessionid using session filter
+- Use of path parameter{} given().pathParam("key","10101").body.post(resource/{key}) 
+- SessionFilter session = new SessionFilter()
+- Session filter instead of extracting it using the Jsonpath extraction 
+- .filter(session).when
+
+
+- Add attachment 
+  - curl -D- -u admin:admin -X POST -H "X-Atlassian-Token: no-check" -F "file=@myfile.txt" http://myhost/rest/api/2/issue/TEST-123/attachments
+  - use multipart method 
+  - given().header("X-Atlassian-Token: no-check").filter(session).pathParam("key","10101")
+  .multipart("file",new File("jira.txt")).when().post("rest/api/2/issue/) - header - content type - multipart/form-data instead of application/json 
+  
+- Get issue 
+  - .pathParam("key","10101")
+  - .queryParam("fields","comment")
+  - 
+
+  - given().relaxedHTTPSValidation()
+  
+  
+Section 8 : Jira API automation
+  
+> Section 9 - Oauth2.0 API using Postman and Rest Assured(automation)
+- cookie based auth - key based auth - Oauth2.0
+- Authorisation for response once API is hit 
+- Secured protocol Oauth2.0 - comes with multiple grant types 
+  - Authorisation code 
+  - Client credentials 
+- Sign in SPI cinemas using Google / facebook account - SPI cinemas will get all details from Google / fb - grant type -> autorisation code 
+
+- OAuth2.0 comes up with multiple grant types 
+- Authorisation code and client credentials are most used Grant types of  OAuth 
+
+- Bookmyshow API example Oauth parameters 
+  - Client   -             Bookmyshow
+  - ClientID -             Id that identifies Bookmyshow - check the google window pop up on signin for Bookmyshow with google 
+  - ClientSecretID -       Id with which Bookmyshow registers with google 
+  - Resource owner -       Me(Human) 
+  - Resource/Auth server - Google 
+
+- Signin using google - Google dialog popup - url will have the public clientId for Bookmyshow 
+- Workflow 
+  User sign in -> Google popup ->  Google Authorisation server(validates user) -> Returns a auth token / code ->
+  Bookmyshow uses the above auth token to hit -> Google resource server -> Fetches Accesstoken, Fname,Lname, email id, DP ->
+  Accesstoken is stored in browser cookie -> with accesstoken email id/details is used to identify by Bookmyshow to send tickets to the user 
+
+
+- getAuthorisationCode   
+  - Get token / code from Google authorisation server - getCode 
+  - scope       - what all info/ details would be needed for the Client (Bookmyshow)
+  - auth_url    - google url for the authorisation server 
+  - client_id   - Id that identifies Client(Bookmyshow) 
+  - response_type- token/ code 
+  - redirect_url - Bookmyshow/rahulshettyacademy
+  - state        - security parameter
+- construct the url with these parameter values and login with gmail - paste the constructed url to the browser 
+
+
+- getAccessToken
+  - fetch the url with the accesstoken from google - exchangeCode 
+  - code - code from above url 
+  - client_id - Bookmyshow id 
+  - client_secret - secret id of bookmyshow
+  - redirect_uri - bookmyshow
+  - grant_type - authorisation_code 
+  - get the access token 
+  
+- actual request - to get courses from rahulshettyacademy
+  - url with the access token and send 
+  - response will have the list of courses 
+  
+- OAuth2.0 contract details 
+  - Grant type 
+  - redirect url 
+  - Authorisation server url 
+  - Access token url 
+  - Client id 
+  - Client secret id 
+  - Scope 
+  - State 
+  
+Workflow(Oauth2.0 Postman package) - > GetAuthorisation code -> GetAccess Token -> Actual request 
+
+To get authorisation code from url hitting authorisation server - https://accounts.google.com/o/oauth2/v2/auth (baseurl)-- gives the auth code 
+To get access token hitting resource server with client id and secret id
+- https://www.googleapis.com/oauth2/v4/token (baseurl) -- gives the access token 
+Actual request - use the access token with the base url  - Send                                      -- gets the response 
+
+https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.email&auth_url=https://accounts.google.com/o/oauth2/v2/auth&client_id=692183103107-p0m7ent2hk7suguv4vq22hjcfhcr43pj.apps.googleusercontent.com&response_type=code&redirect_uri=https://rahulshettyacademy.com/getCourse.php
+
+Auth url
+https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/userinfo.email&auth_url=https://accounts.google.com/o/oauth2/v2/auth&&client_id=692183103107-p0m7ent2hk7suguv4vq22hjcfhcr43pj.apps.googleusercontent.com&response_type=code &redirect_uri=
+
+Access code url - get the access token on sending the below request 
+https://rahulshettyacademy.com/getCourse.php?state=verifyapi&code=4%2F0AY0e-g5s6MNaRHX3Kix_ExZM-0vwmzS-pS7PlyEbRmldBvpa88xM_XLFPSY1_wq5TZjKYA&scope=email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent#
+
+acess_token = ya29.a0AfH6SMDaO8BJf_-OE5_57ssWua5LNoABvJ9JSIVhxopv37r4GxfJ5XohuTxG3YlkutwhJStdRwp7EMjx_Ge7NclJDaOelBQXNpZ_5IlFgOS-t3d7wDndt390sBUT-SrmrEtIbozcfzE0eqsB51BdnbbMC0Zz7txy2JpedfNT4oY
+
+GetCourses request url
+https://rahulshettyacademy.com/getCourse.php?access_token=ya29.a0AfH6SMDaO8BJf_-OE5_57ssWua5LNoABvJ9JSIVhxopv37r4GxfJ5XohuTxG3YlkutwhJStdRwp7EMjx_Ge7NclJDaOelBQXNpZ_5IlFgOS-t3d7wDndt390sBUT-SrmrEtIbozcfzE0eqsB51BdnbbMC0Zz7txy2JpedfNT4oY
+
+
+> Section10 - Rest assured Automation for Oauth2.0
+- oAuth.java
+- Authorisation grant type needs the following contract details  (generateAccessToken postman request)
+  - callback url 
+  - Auth url 
+  - Access token url 
+  - Client id 
+  - Client secret id
+  - Scope 
+  - State 
+- Client credentials Grant type 
+  - Access token url 
+  - Client id 
+  - Client secret id
+  - Scope 
+  
+  
+> Section11 - Serialization & De serialization using POJO classes - pojo package - oAuth.java - Serialiasation.java
+  - Serialization -  process of converting java object class into request body (json payload) using Pojo classes setter method
+  - Pojo classes - java class with getter and setter for the json parameters/keys 
+  - Deserialisation - json response -> create POJO classes and extract the specific field/ key response instead of using jsonpath using Pojo classes getter method
+  - Additional libraries to process serialisation and deserialisation on json - Jackson , Gson 
+                                                                      on xml  - Jaxb
+  - Download the maven jar files / or maven code - Jackson databind - jackson annotations- jackson core - Gson 
+  - Parse complex json using the above Pojo libraries - json payload_2
+  - Create pojo classes for the 6 objects from the json 
+  - lookout for nested json field courses - strategy is to create another pojo class for this nested json 
+  - defaultParser
+  - Deserialisation - Getcourses - convert the json response into java object 
+  
+  
+> Section12 - Serialiasation for adding place in google maps - Serialiasation.java
+  - Serialiasation - Add place google maps - convert the Javaobject into json 
+  - 
+
+> Section13 - Request and Response Spec builders - SpecBuilderTest.java
+  - Request/ response spec builder  - more like a common template that could be used across the project 
+  
+> Section 14 - REST API Framework building scratch -1 
+> Section 15 - Maven and cucumber 
+  - Maven 
+    - repository for dependancies and build management tool 
+	- Plugins and can be integrated to CI 
+	- Common project structure across the organisation 
+	- groupid - project identification - Selenium Project
+	- artifactid - sub project identification - Selenium Java 
+	- mvn archetype:generate -DgroupId=qaclickacademy -DartifactId=Mavenjava -DarchetypeArtifactId=maven-archetype-quickstart Dinteractivemode=false
+	- mvn eclipse:eclipse 
+	
+   - Cucumber 
+     - BDD framework for running automation test cases 
+	 - Framework supporting automation with parameterisation - hooks - reports - Data driven - utilities  etc 
+	 
+	 - Keywords - Scenario - Feature - Feature file - Step definition 
+	 - Scenarios - Test case 
+	 - Gherkin - business readable domain specific language 
+	   - Given - under a certain precondition 
+	   - When  - under certain user action 
+	   - And   - additional actions 
+	   - Then  - Expected output 
+	   - And   - Reference number is displayed 
+	   - But   - Error message is not displayed 
+	
+
+	Feature file - .feature extension will have all the scenario test cases / Test suite with multiple test cases 
+    Feature      - Credit card payment Functionality CR / Feature - basically will test multiple scenarios
+	
+	  - Scenario1 - Make minimum due payment 
+	    Given    - user is on pay credit card page 
+		When     - user fills details and chooses min amount option 
+		And      - User clicks on pay button 
+		Then     - Confirmation page / message displayed 
+		And      - Reference number is displayed 
+		But      - Error message is not displayed 
+	
+	  - Scenario2 - Pay statement balance 
+	  - Scenario3 - Enter zero amount 
+		
+	Step definition - .java file 
+      - Implementation of the scenario steps in code 	
+		
+    - Cucumber installation 
+	  - Eclipse Help - Marketplace - Install Natural 0.9 Plugin 
+	  - maven archtype quickstart
+	  - cucumber java and cucumber junit dependancy from mvn repo
+	  
+	- Automation in cucumber framework 
+	  - feature file - basically the file containing the scenarios for a feature/functionality 
+	  - step definition file - map the scenario to the code 
+	  - Testrunner(junit) - location info on feature file and the mapping to step definition 
+	
+	- package - features 
+	- file - Login.feature
+	- package - stepdefinition 
+	- file - StepDef.java 
+	- Stepdefinition file will have methods that are identified by scenario keywords @Given @When etc
+	- Tidygherkin - copy and paste the feature file content -> get the step definition file methods 
+	- package - testRunner
+	- file - TestRunner will locate the Stepdefinition file for the feature file 
+	- @CucumberOptions  with features - location of feature file & glue - the stepdefinition package 
+	- Regular expressions usage - for multiple scenarios existing in the stepdefinition 
+	- accepts multiple scenario steps in the feature file as long as the stepdefiniton method accepts using reg expression 
+	- 
+
+
